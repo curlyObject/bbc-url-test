@@ -41,4 +41,10 @@ To build
 Will run all of the unit tests in this project.
 
 
+#### USeful Links
+
+https://www.iana.org/assignments/message-headers/message-headers.xml#perm-headers
+
+List of all response headers that are officially recognised. The names defined here are what are used to try and extract the necessary information from responses from provided URLs.
+
 
