@@ -1,0 +1,33 @@
+group 'bbc-url-tester'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+
+mainClassName = "org.neil.main.app.Main"
+
+repositories {
+    mavenCentral()
+}
+
+// Get dependencies from maven central
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+// Addition to the run task provided by gradle that allows arguments to be piped to the application
+run {
+    if (project.hasProperty("appArgs")) {
+        args Eval.me(appArgs)
+    }
+}
+
+// Addition to the Jar task to provide the main class for the mainfest inside the .jar
+jar {
+    manifest {
+        attributes(
+                'Main-Class': mainClassName
+        )
+    }
+}
