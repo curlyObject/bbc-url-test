@@ -386,11 +386,11 @@ public class MainTest {
                 .hasSize(6)
                 .containsExactly(
                         "{",
-                        "\"Url\": \"" + expectedUrl + "\",",
-                        "\"Status_code\": " + statusCode + ",",
-                        "\"Content_length\": " + expectedLength + ",",
-                        "\"Date\": \"" + expectedDateFormatted + "\"",
-                        "}"
+                        "  \"Url\": \"" + expectedUrl + "\",",
+                        "  \"Status_code\": " + statusCode + ",",
+                        "  \"Content_length\": " + expectedLength + ",",
+                        "  \"Date\": \"" + expectedDateFormatted + "\"",
+                        "}\n"
                 );
     }
 
@@ -400,9 +400,9 @@ public class MainTest {
                 .hasSize(4)
                 .containsExactly(
                         "{",
-                        "\"Url\": \"" + expectedUrl + "\",",
-                        "\"Error\": \"" + expectedError + "\",",
-                        "}"
+                        "  \"Url\": \"" + expectedUrl + "\",",
+                        "  \"Error\": \"" + expectedError + "\",",
+                        "}\n"
                 );
     }
 
