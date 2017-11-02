@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class UrlBuilderVerificationTest {
 
-    private UrlBuilder urlBuilder;
+    private UrlBuilder urlBuilder = new SimpleUrlVerifier();
 
     // ####################### POSITIVE TESTS #######################
 
@@ -99,9 +99,17 @@ public class UrlBuilderVerificationTest {
     }
 
     @Test
+    public void returnFalse_WhenUnknownProtocol() {
+
+        final String url = "zxy://www.bbc.co.uk";
+
+        assertFalse(urlBuilder.verify(url));
+    }
+
+    @Test
     public void returnFalse_WhenUnescapedIllegalCharacter() {
 
-        final String url = "http://www.bbc.co.uk//";
+        final String url = "http://www.bbc.co.uk/[";
 
         assertFalse(urlBuilder.verify(url));
     }
