@@ -230,7 +230,7 @@ public class MainTest {
     public void errorDocument_WhenProtocolNotSupported() {
 
         final String expectedUrl = "ftp://dr@who/test";
-        final String expectedError = "Protocol not supported";
+        final String expectedError = "Invalid Url";
 
         Main.main(expectedUrl);
 
@@ -241,7 +241,7 @@ public class MainTest {
     public void errorDocument_WhenProtocolMissing() {
 
         final String expectedUrl = "www.bbc.co.uk";
-        final String expectedError = "Protocol is required";
+        final String expectedError = "Invalid Url";
 
         Main.main(expectedUrl);
 
