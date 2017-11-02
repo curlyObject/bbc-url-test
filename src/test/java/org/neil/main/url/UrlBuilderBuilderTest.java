@@ -14,7 +14,7 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
  */
 public class UrlBuilderBuilderTest {
 
-    final UrlBuilder urlBuilder;
+    private UrlBuilder urlBuilder;
 
     // ####################### POSITIVE TESTS #######################
 
