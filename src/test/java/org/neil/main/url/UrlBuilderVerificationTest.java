@@ -10,7 +10,7 @@ import static org.junit.Assert.assertTrue;
  *
  * Checks that that Urls are verified correctly and will build a Url
  */
-public class UrlBuilderTest {
+public class UrlBuilderVerificationTest {
 
     private UrlBuilder urlBuilder;
 
