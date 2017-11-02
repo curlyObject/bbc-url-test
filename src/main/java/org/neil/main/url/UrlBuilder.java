@@ -18,6 +18,8 @@ public interface UrlBuilder {
     /**
      * Will verify a string to see if it is a correctly formatted URL. A List of errors can be produced of all of the syntax failures.
      *
+     * Needs to comply with the specification laid out in this rfc: http://www.ietf.org/rfc/rfc3986.txt
+     *
      * @param urlString The string representing a Url
      * @return True only if the provided String represents a syntactically correct URL
      */
