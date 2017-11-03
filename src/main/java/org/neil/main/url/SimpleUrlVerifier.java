@@ -26,6 +26,7 @@ public class SimpleUrlVerifier implements UrlBuilder {
         }
     }
 
+    // TODO Look into regex matching for URL pattern: (http[s]?:\/\/)([\w-]+)(\.[\w-]+)+(\/)?((([\/\w-])+)*(.\w+)?(\?(((\w*(%\d{2})*\w*)=(\w*(%\d{2})*\w*)){1}(&(\w*(%\d{2})*\w*)=(\w*(%\d{2})*\w*))*)?))?(#[\/\?(%\d{2})\w]+)?
     @Override
     public boolean verify(String urlString) {
 
