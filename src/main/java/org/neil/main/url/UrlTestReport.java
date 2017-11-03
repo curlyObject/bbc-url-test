@@ -51,4 +51,15 @@ public class UrlTestReport implements UrlReport {
 
         return Objects.hash(url, statusCode, contentLength, date);
     }
+
+    @Override
+    public String toString() {
+
+        return "UrlTestReport{" +
+                "url='" + url + '\'' +
+                ", statusCode=" + statusCode +
+                ", contentLength=" + contentLength +
+                ", date='" + date + '\'' +
+                '}';
+    }
 }

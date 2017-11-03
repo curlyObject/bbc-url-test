@@ -47,4 +47,13 @@ public class UrlErrorReport implements UrlReport {
 
         return Objects.hash(url, error);
     }
+
+    @Override
+    public String toString() {
+
+        return "UrlErrorReport{" +
+                "url='" + url + '\'' +
+                ", error='" + error + '\'' +
+                '}';
+    }
 }
