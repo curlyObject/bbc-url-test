@@ -1,5 +1,7 @@
 package org.neil.main.url;
 
+import java.util.Objects;
+
 public class UrlTestReport implements UrlReport {
 
     private final String url;
@@ -26,5 +28,27 @@ public class UrlTestReport implements UrlReport {
                 "  \"Content_length\": " + contentLength + ",\n" +
                 "  \"Date\": \"" + date + "\"\n" +
                 "}\n";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        UrlTestReport that = (UrlTestReport) o;
+        return statusCode == that.statusCode &&
+                Objects.equals(url, that.url) &&
+                Objects.equals(contentLength, that.contentLength) &&
+                Objects.equals(date, that.date);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(url, statusCode, contentLength, date);
     }
 }

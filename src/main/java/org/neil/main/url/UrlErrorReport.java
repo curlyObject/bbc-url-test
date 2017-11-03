@@ -1,5 +1,7 @@
 package org.neil.main.url;
 
+import java.util.Objects;
+
 public class UrlErrorReport implements UrlReport {
 
     private final String url;
@@ -11,8 +13,7 @@ public class UrlErrorReport implements UrlReport {
         this.error = error;
     }
 
-    //TODO Setup Jackson to convery Object to json
-
+    //TODO Setup Jackson to convert Object to json
     /**
      * Returns the url and error in a simple json object
      *
@@ -25,5 +26,25 @@ public class UrlErrorReport implements UrlReport {
                 "  \"Url\": \"" + url + "\",\n" +
                 "  \"Error\": \"" + error + "\"\n" +
                 "}\n";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        UrlErrorReport that = (UrlErrorReport) o;
+        return Objects.equals(url, that.url) &&
+                Objects.equals(error, that.error);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(url, error);
     }
 }
