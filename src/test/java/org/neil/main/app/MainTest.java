@@ -93,15 +93,14 @@ public class MainTest {
         final String expectedDate = getDate();
         final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
 
-        final HttpHeaders expectedHeaders = new HttpHeaders(buildContentLengthHeader(LENGTH),
-                buildDateHeader(expectedDate));
+        final HttpHeaders expectedHeaders = new HttpHeaders(buildDateHeader(expectedDate));
 
         final int statusCode = 308;
         stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
 
         Main.executeUrlTester(new String[] {expectedUrl});
 
-        assertStatusDocument(expectedDate, expectedUrl, statusCode, LENGTH, extractStandardOutput());
+        assertStatusDocument(expectedDate, expectedUrl, statusCode, null, extractStandardOutput());
 
     }
 
@@ -111,15 +110,14 @@ public class MainTest {
         final String expectedDate = getDate();
         final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
 
-        final HttpHeaders expectedHeaders = new HttpHeaders(buildContentLengthHeader(LENGTH),
-                buildDateHeader(expectedDate));
+        final HttpHeaders expectedHeaders = new HttpHeaders(buildDateHeader(expectedDate));
 
         final int statusCode = 301;
         stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
 
         Main.executeUrlTester(new String[] {expectedUrl});
 
-        assertStatusDocument(expectedDate, expectedUrl, statusCode, LENGTH, extractStandardOutput());
+        assertStatusDocument(expectedDate, expectedUrl, statusCode, null, extractStandardOutput());
 
     }
 
@@ -129,15 +127,14 @@ public class MainTest {
         final String expectedDate = getDate();
         final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
 
-        final HttpHeaders expectedHeaders = new HttpHeaders(buildContentLengthHeader(LENGTH),
-                buildDateHeader(expectedDate));
+        final HttpHeaders expectedHeaders = new HttpHeaders(buildDateHeader(expectedDate));
 
         final int statusCode = 304;
         stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
 
         Main.executeUrlTester(new String[] {expectedUrl});
 
-        assertStatusDocument(expectedDate, expectedUrl, statusCode, LENGTH, extractStandardOutput());
+        assertStatusDocument(expectedDate, expectedUrl, statusCode, null, extractStandardOutput());
 
     }
 
@@ -147,15 +144,14 @@ public class MainTest {
         final String expectedDate = getDate();
         final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
 
-        final HttpHeaders expectedHeaders = new HttpHeaders(buildContentLengthHeader(LENGTH),
-                buildDateHeader(expectedDate));
+        final HttpHeaders expectedHeaders = new HttpHeaders(buildDateHeader(expectedDate));
 
         final int statusCode = 404;
         stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
 
         Main.executeUrlTester(new String[] {expectedUrl});
 
-        assertStatusDocument(expectedDate, expectedUrl, statusCode, LENGTH, extractStandardOutput());
+        assertStatusDocument(expectedDate, expectedUrl, statusCode, null, extractStandardOutput());
     }
 
     @Test
@@ -191,28 +187,10 @@ public class MainTest {
     }
 
     @Test
-    public void errorDocument_WhenUrlDoesNotResolve() {
-
-        final String expectedDate = getDate();
-        final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, "/fake");
-        final String expectedError = "URL could not be resolved by the DNS server";
-
-        final HttpHeaders expectedHeaders = new HttpHeaders(buildContentLengthHeader(LENGTH),
-                buildDateHeader(expectedDate));
-
-        final int statusCode = 200;
-        stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
-
-        Main.executeUrlTester(new String[] {expectedUrl});
-
-        assertErrorDocument(expectedUrl, expectedError);
-    }
-
-    @Test
     public void errorDocument_WhenProtocolNotSupported() {
 
         final String expectedUrl = "ftp://dr@who/test";
-        final String expectedError = "Invalid Url";
+        final String expectedError = "URL Malformed";
 
         Main.executeUrlTester(new String[] {expectedUrl});
 
@@ -223,37 +201,7 @@ public class MainTest {
     public void errorDocument_WhenProtocolMissing() {
 
         final String expectedUrl = "www.bbc.co.uk";
-        final String expectedError = "Invalid Url";
-
-        Main.executeUrlTester(new String[] {expectedUrl});
-
-        assertErrorDocument(expectedUrl, expectedError);
-    }
-
-    @Test
-    public void errorDocument_WhenResponseMalformed() {
-
-        final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
-        final String expectedError = "Response is Malformed";
-
-        wireMockServer.stubFor(get(urlEqualTo(expectedUrl))
-                .willReturn(aResponse()
-                        .withFault(Fault.MALFORMED_RESPONSE_CHUNK)));
-
-        Main.executeUrlTester(new String[] {expectedUrl});
-
-        assertErrorDocument(expectedUrl, expectedError);
-    }
-
-    @Test
-    public void errorDocument_WhenResponseRandom() {
-
-        final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
-        final String expectedError = "Response is Malformed";
-
-        wireMockServer.stubFor(get(urlEqualTo(expectedUrl))
-                .willReturn(aResponse()
-                        .withFault(Fault.RANDOM_DATA_THEN_CLOSE)));
+        final String expectedError = "URL Malformed";
 
         Main.executeUrlTester(new String[] {expectedUrl});
 
@@ -264,11 +212,11 @@ public class MainTest {
     public void errorDocument_WhenRequestTimesOut() {
 
         final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
-        final String expectedError = "Request Timed Out";
+        final String expectedError = "Url could not be connected to";
 
-        wireMockServer.stubFor(get(urlEqualTo(expectedUrl))
+        wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))
                 .willReturn(aResponse()
-                        .withFixedDelay(10000)));
+                        .withFixedDelay(11000)));
 
         Main.executeUrlTester(new String[] {expectedUrl});
 
@@ -279,9 +227,9 @@ public class MainTest {
     public void errorDocument_WhenConnectionReset() {
 
         final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
-        final String expectedError = "Connection reset";
+        final String expectedError = "Url could not be connected to";
 
-        wireMockServer.stubFor(get(urlEqualTo(expectedUrl))
+        wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))
                 .willReturn(aResponse()
                         .withFault(Fault.CONNECTION_RESET_BY_PEER)));
 
@@ -294,9 +242,9 @@ public class MainTest {
     public void errorDocument_WhenResponseEmpty() {
 
         final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
-        final String expectedError = "Connection reset";
+        final String expectedError = "Url could not be connected to";
 
-        wireMockServer.stubFor(get(urlEqualTo(expectedUrl))
+        wireMockServer.stubFor(get(urlEqualTo(TEST_PATH))
                 .willReturn(aResponse()
                         .withFault(Fault.EMPTY_RESPONSE)));
 
@@ -339,7 +287,7 @@ public class MainTest {
                 .containsExactly(
                         "{\n" +
                                 "  \"Url\": \"" + expectedUrl + "\",\n" +
-                                "  \"Error\": \"" + expectedError + "\",\n" +
+                                "  \"Error\": \"" + expectedError + "\"\n" +
                         "}\n"
                 );
     }
