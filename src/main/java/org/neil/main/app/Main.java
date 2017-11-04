@@ -1,13 +1,19 @@
 package org.neil.main.app;
 
-import java.util.Arrays;
-
 public class Main {
 
     public static void main(String... args) {
 
-        System.out.println("Hello World!!!");
-        Arrays.stream(args).forEach(System.out::println);
+        if (executeUrlTester(args)) {
+            System.exit(0);
+        } else {
+            System.exit(1);
+        }
+    }
+
+    static boolean executeUrlTester(String[] args) {
+
+        return new UrlTesterApplication().testUrls(new SimpleArgumentProcessor().process(args));
     }
 
 }

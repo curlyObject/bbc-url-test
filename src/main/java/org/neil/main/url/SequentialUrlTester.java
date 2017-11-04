@@ -38,11 +38,12 @@ public class SequentialUrlTester implements UrlTester {
 
     private UrlReport buildUrlTestReport(String urlString, HttpResponse httpResponse) {
 
+        final Long contentLength = httpResponse.geContentLengthHeader().map(Long::valueOf).orElse(null);
         return new UrlTestReport(
                 urlString,
                 httpResponse.getStatusCode(),
-                Long.valueOf(httpResponse.geContentLengthHeader().get()),
-                httpResponse.getDateHeader().get());
+                contentLength,
+                httpResponse.getDateHeader().orElse(null));
     }
 
     private Optional<HttpResponse> getHttpResponse(URL url) {

@@ -63,7 +63,7 @@ public class MainTest {
         final int statusCode = 200;
         stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
 
-        Main.main(expectedUrl);
+        Main.executeUrlTester(new String[] {expectedUrl});
 
         assertStatusDocument(expectedDate, expectedUrl, statusCode, LENGTH, extractStandardOutput());
 
@@ -81,7 +81,7 @@ public class MainTest {
         final int statusCode = 200;
         stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
 
-        Main.main(expectedUrl);
+        Main.executeUrlTester(new String[] {expectedUrl});
 
         assertStatusDocument(expectedDate, expectedUrl, statusCode, LENGTH, extractStandardOutput());
 
@@ -99,7 +99,7 @@ public class MainTest {
         final int statusCode = 308;
         stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
 
-        Main.main(expectedUrl);
+        Main.executeUrlTester(new String[] {expectedUrl});
 
         assertStatusDocument(expectedDate, expectedUrl, statusCode, LENGTH, extractStandardOutput());
 
@@ -117,7 +117,7 @@ public class MainTest {
         final int statusCode = 301;
         stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
 
-        Main.main(expectedUrl);
+        Main.executeUrlTester(new String[] {expectedUrl});
 
         assertStatusDocument(expectedDate, expectedUrl, statusCode, LENGTH, extractStandardOutput());
 
@@ -135,7 +135,7 @@ public class MainTest {
         final int statusCode = 304;
         stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
 
-        Main.main(expectedUrl);
+        Main.executeUrlTester(new String[] {expectedUrl});
 
         assertStatusDocument(expectedDate, expectedUrl, statusCode, LENGTH, extractStandardOutput());
 
@@ -153,7 +153,7 @@ public class MainTest {
         final int statusCode = 404;
         stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
 
-        Main.main(expectedUrl);
+        Main.executeUrlTester(new String[] {expectedUrl});
 
         assertStatusDocument(expectedDate, expectedUrl, statusCode, LENGTH, extractStandardOutput());
     }
@@ -169,7 +169,7 @@ public class MainTest {
         final int statusCode = 200;
         stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
 
-        Main.main(expectedUrl);
+        Main.executeUrlTester(new String[] {expectedUrl});
 
         assertStatusDocument(expectedDate, expectedUrl, statusCode, null, extractStandardOutput());
     }
@@ -185,7 +185,7 @@ public class MainTest {
         final int statusCode = 200;
         stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
 
-        Main.main(expectedUrl);
+        Main.executeUrlTester(new String[] {expectedUrl});
 
         assertStatusDocument(expectedDate, expectedUrl, statusCode, LENGTH, extractStandardOutput());
     }
@@ -203,7 +203,7 @@ public class MainTest {
         final int statusCode = 200;
         stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
 
-        Main.main(expectedUrl);
+        Main.executeUrlTester(new String[] {expectedUrl});
 
         assertErrorDocument(expectedUrl, expectedError);
     }
@@ -214,7 +214,7 @@ public class MainTest {
         final String expectedUrl = "ftp://dr@who/test";
         final String expectedError = "Invalid Url";
 
-        Main.main(expectedUrl);
+        Main.executeUrlTester(new String[] {expectedUrl});
 
         assertErrorDocument(expectedUrl, expectedError);
     }
@@ -225,7 +225,7 @@ public class MainTest {
         final String expectedUrl = "www.bbc.co.uk";
         final String expectedError = "Invalid Url";
 
-        Main.main(expectedUrl);
+        Main.executeUrlTester(new String[] {expectedUrl});
 
         assertErrorDocument(expectedUrl, expectedError);
     }
@@ -240,7 +240,7 @@ public class MainTest {
                 .willReturn(aResponse()
                         .withFault(Fault.MALFORMED_RESPONSE_CHUNK)));
 
-        Main.main(expectedUrl);
+        Main.executeUrlTester(new String[] {expectedUrl});
 
         assertErrorDocument(expectedUrl, expectedError);
     }
@@ -255,7 +255,7 @@ public class MainTest {
                 .willReturn(aResponse()
                         .withFault(Fault.RANDOM_DATA_THEN_CLOSE)));
 
-        Main.main(expectedUrl);
+        Main.executeUrlTester(new String[] {expectedUrl});
 
         assertErrorDocument(expectedUrl, expectedError);
     }
@@ -270,7 +270,7 @@ public class MainTest {
                 .willReturn(aResponse()
                         .withFixedDelay(10000)));
 
-        Main.main(expectedUrl);
+        Main.executeUrlTester(new String[] {expectedUrl});
 
         assertErrorDocument(expectedUrl, expectedError);
     }
@@ -285,7 +285,7 @@ public class MainTest {
                 .willReturn(aResponse()
                         .withFault(Fault.CONNECTION_RESET_BY_PEER)));
 
-        Main.main(expectedUrl);
+        Main.executeUrlTester(new String[] {expectedUrl});
 
         assertErrorDocument(expectedUrl, expectedError);
     }
@@ -300,7 +300,7 @@ public class MainTest {
                 .willReturn(aResponse()
                         .withFault(Fault.EMPTY_RESPONSE)));
 
-        Main.main(expectedUrl);
+        Main.executeUrlTester(new String[] {expectedUrl});
 
         assertErrorDocument(expectedUrl, expectedError);
     }
@@ -321,13 +321,13 @@ public class MainTest {
                                       Long expectedLength, String[] outputLines) {
 
         assertThat(outputLines)
-                .hasSize(6)
+                .hasSize(1)
                 .containsExactly(
-                        "{",
-                        "  \"Url\": \"" + expectedUrl + "\",",
-                        "  \"Status_code\": " + statusCode + ",",
-                        "  \"Content_length\": " + expectedLength + ",",
-                        "  \"Date\": \"" + expectedDateFormatted + "\"",
+                        "{\n" +
+                                "  \"Url\": \"" + expectedUrl + "\",\n" +
+                                "  \"Status_code\": " + statusCode + ",\n" +
+                                "  \"Content_length\": " + expectedLength + ",\n" +
+                                "  \"Date\": \"" + expectedDateFormatted + "\"\n" +
                         "}\n"
                 );
     }
@@ -335,11 +335,11 @@ public class MainTest {
     private void assertErrorDocument(String expectedUrl, String expectedError) {
 
         assertThat(extractStandardOutput())
-                .hasSize(4)
+                .hasSize(1)
                 .containsExactly(
-                        "{",
-                        "  \"Url\": \"" + expectedUrl + "\",",
-                        "  \"Error\": \"" + expectedError + "\",",
+                        "{\n" +
+                                "  \"Url\": \"" + expectedUrl + "\",\n" +
+                                "  \"Error\": \"" + expectedError + "\",\n" +
                         "}\n"
                 );
     }

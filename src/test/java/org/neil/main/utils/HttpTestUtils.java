@@ -13,6 +13,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 public final class HttpTestUtils {
 
     private static final String CONTENT_LENGTH = "Content-Length";
+    private static final String DATE = "Date";
 
     private HttpTestUtils() {
 
@@ -43,7 +44,7 @@ public final class HttpTestUtils {
 
     public static HttpHeader buildDateHeader(String date) {
 
-        return new HttpHeader(CONTENT_LENGTH, date);
+        return new HttpHeader(DATE, date);
     }
 
     public static void stubUrl(WireMockServer wireMockServer, String expectedUrl, HttpHeaders expectedHeaders,
@@ -51,6 +52,7 @@ public final class HttpTestUtils {
 
         wireMockServer.stubFor(get(urlEqualTo(expectedUrl))
                 .willReturn(aResponse()
+                        .withBody("Message".getBytes())
                         .withStatus(statusCode)
                         .withHeaders(expectedHeaders)));
     }
