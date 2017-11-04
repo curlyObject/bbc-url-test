@@ -38,6 +38,8 @@ public class MainTest {
     public void setUp() {
 
         System.setOut(new PrintStream(outContent));
+
+        wireMockServer = startMockServer(MOCK_SERVER);
     }
 
     @After
@@ -51,8 +53,6 @@ public class MainTest {
 
     @Test
     public void statusDocument_WhenUrlFound() {
-
-        startMockServer(MOCK_SERVER);
 
         final String expectedDate = getDate();
         final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
@@ -72,8 +72,6 @@ public class MainTest {
     @Test
     public void statusDocument_WhenUrlHttps() {
 
-        startMockServer(MOCK_SERVER);
-
         final String expectedDate = getDate();
         final String expectedUrl = buildExpectedHttpsUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
 
@@ -91,8 +89,6 @@ public class MainTest {
 
     @Test
     public void statusDocument_WhenUrlRedirects() {
-
-        startMockServer(MOCK_SERVER);
 
         final String expectedDate = getDate();
         final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
@@ -112,8 +108,6 @@ public class MainTest {
     @Test
     public void statusDocument_WhenUrlModePermanently() {
 
-        startMockServer(MOCK_SERVER);
-
         final String expectedDate = getDate();
         final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
 
@@ -131,8 +125,6 @@ public class MainTest {
 
     @Test
     public void statusDocument_WhenUrlNotModified() {
-
-        startMockServer(MOCK_SERVER);
 
         final String expectedDate = getDate();
         final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
@@ -152,8 +144,6 @@ public class MainTest {
     @Test
     public void statusDocument_WhenUrlPageNotFound() {
 
-        startMockServer(MOCK_SERVER);
-
         final String expectedDate = getDate();
         final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
 
@@ -171,8 +161,6 @@ public class MainTest {
     @Test
     public void statusDocument_WhenContentLengthMissing() {
 
-        startMockServer(MOCK_SERVER);
-
         final String expectedDate = getDate();
         final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
 
@@ -189,8 +177,6 @@ public class MainTest {
     @Test
     public void statusDocument_WhenDateMissing() {
 
-        startMockServer(MOCK_SERVER);
-
         final String expectedDate = null;
         final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
 
@@ -206,8 +192,6 @@ public class MainTest {
 
     @Test
     public void errorDocument_WhenUrlDoesNotResolve() {
-
-        startMockServer(MOCK_SERVER);
 
         final String expectedDate = getDate();
         final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, "/fake");
@@ -249,8 +233,6 @@ public class MainTest {
     @Test
     public void errorDocument_WhenResponseMalformed() {
 
-        startMockServer(MOCK_SERVER);
-
         final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
         final String expectedError = "Response is Malformed";
 
@@ -265,8 +247,6 @@ public class MainTest {
 
     @Test
     public void errorDocument_WhenResponseRandom() {
-
-        startMockServer(MOCK_SERVER);
 
         final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
         final String expectedError = "Response is Malformed";
@@ -283,8 +263,6 @@ public class MainTest {
     @Test
     public void errorDocument_WhenRequestTimesOut() {
 
-        startMockServer(MOCK_SERVER);
-
         final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
         final String expectedError = "Request Timed Out";
 
@@ -300,8 +278,6 @@ public class MainTest {
     @Test
     public void errorDocument_WhenConnectionReset() {
 
-        startMockServer(MOCK_SERVER);
-
         final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
         final String expectedError = "Connection reset";
 
@@ -316,8 +292,6 @@ public class MainTest {
 
     @Test
     public void errorDocument_WhenResponseEmpty() {
-
-        startMockServer(MOCK_SERVER);
 
         final String expectedUrl = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
         final String expectedError = "Connection reset";

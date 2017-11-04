@@ -12,9 +12,8 @@ import static org.neil.main.util.ErrorOutput.logError;
 
 /**
  * Logic for performing a HTTP GET on the provided URL.
- * Package private as its only intended to be used by the UrlTester
  */
-class GetRequest {
+public class GetRequest {
 
     private static final String HTTP = "http";
     private static final String HTTPS = "https";
