@@ -108,7 +108,7 @@ public class MainTest {
                         expectedUrl6, expectedUrl7)});
 
         assertThat(extractStandardOutput())
-                .hasSize(4)
+                .hasSize(5)
                 .containsExactly(
                         "{\n" +
                                 "  \"Url\": \"" + expectedUrl1 + "\",\n" +
@@ -133,7 +133,17 @@ public class MainTest {
                                 "  \"Status_code\": " + statusCode + ",\n" +
                                 "  \"Content_length\": " + LENGTH + ",\n" +
                                 "  \"Date\": \"" + expectedDate + "\"\n" +
-                                "}\n"
+                                "}\n",
+                        "[\n" +
+                                "  {\n" +
+                                "    \"Status_code\": -1,\n" +
+                                "    \"Number_of_responses\": 3\n" +
+                                "  },\n" +
+                                "  {\n" +
+                                "    \"Status_code\": 200,\n" +
+                                "    \"Number_of_responses\": 4\n" +
+                                "  }\n" +
+                                "]\n"
                 );
 
         assertThat(extractStandardErr())
@@ -343,14 +353,21 @@ public class MainTest {
                                       Long expectedLength, String[] outputLines) {
 
         assertThat(outputLines)
-                .hasSize(1)
+                .hasSize(2)
                 .containsExactly(
                         "{\n" +
                                 "  \"Url\": \"" + expectedUrl + "\",\n" +
                                 "  \"Status_code\": " + statusCode + ",\n" +
                                 "  \"Content_length\": " + expectedLength + ",\n" +
                                 "  \"Date\": \"" + expectedDateFormatted + "\"\n" +
-                        "}\n"
+                                "}\n",
+                        "[\n" +
+                                "  {\n" +
+                                "    \"Status_code\": " + statusCode + ",\n" +
+                                "    \"Number_of_responses\": 1\n" +
+                                "  }\n" +
+                                "]\n"
+
                 );
     }
 
@@ -361,7 +378,16 @@ public class MainTest {
                         "{\n" +
                                 "  \"Url\": \"" + expectedUrl + "\",\n" +
                                 "  \"Error\": \"" + expectedError + "\"\n" +
-                        "}\n"
+                                "}\n"
+                );
+        assertThat(extractStandardOutput())
+                .contains(
+                        "[\n" +
+                                "  {\n" +
+                                "    \"Status_code\": -1,\n" +
+                                "    \"Number_of_responses\": 1\n" +
+                                "  }\n" +
+                                "]\n"
                 );
     }
 

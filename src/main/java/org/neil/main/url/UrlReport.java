@@ -5,6 +5,8 @@ package org.neil.main.url;
  */
 public interface UrlReport {
 
+    int getStatusCode();
+
     /**
      * Converts this object into a json string as the implementing class sees fit.
      *

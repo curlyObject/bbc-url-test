@@ -4,6 +4,7 @@ import java.util.Objects;
 
 public class UrlTestReport implements UrlReport {
 
+    private static final String LINE_ENDING = "\n";
     private final String url;
     private final int statusCode;
     // Might not be returned in the headers, will be null in this case
@@ -20,14 +21,20 @@ public class UrlTestReport implements UrlReport {
     }
 
     @Override
+    public int getStatusCode() {
+
+        return statusCode;
+    }
+
+    @Override
     public String toJson() {
 
-        return "{\n" +
-                "  \"Url\": \"" + url + "\",\n" +
-                "  \"Status_code\": " + statusCode + ",\n" +
-                "  \"Content_length\": " + contentLength + ",\n" +
-                "  \"Date\": \"" + date + "\"\n" +
-                "}\n";
+        return "{" + LINE_ENDING +
+                "  \"Url\": \"" + url + "\"," + LINE_ENDING +
+                "  \"Status_code\": " + statusCode + "," + LINE_ENDING +
+                "  \"Content_length\": " + contentLength + "," + LINE_ENDING +
+                "  \"Date\": \"" + date + "\"" + LINE_ENDING +
+                "}" + LINE_ENDING;
     }
 
     @Override

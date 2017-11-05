@@ -4,6 +4,7 @@ import java.util.Objects;
 
 public class UrlErrorReport implements UrlReport {
 
+    private static final String LINE_ENDING = "\n";
     private final String url;
     private final String error;
 
@@ -11,6 +12,12 @@ public class UrlErrorReport implements UrlReport {
 
         this.url = url;
         this.error = error;
+    }
+
+    @Override
+    public int getStatusCode() {
+
+        return -1;
     }
 
     //TODO Setup Jackson to convert Object to json
@@ -22,10 +29,10 @@ public class UrlErrorReport implements UrlReport {
     @Override
     public String toJson() {
 
-        return "{\n" +
-                "  \"Url\": \"" + url + "\",\n" +
-                "  \"Error\": \"" + error + "\"\n" +
-                "}\n";
+        return "{" + LINE_ENDING +
+                "  \"Url\": \"" + url + "\"," + LINE_ENDING +
+                "  \"Error\": \"" + error + "\"" + LINE_ENDING +
+                "}" + LINE_ENDING;
     }
 
     @Override
