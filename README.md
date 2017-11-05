@@ -56,9 +56,9 @@ Errors are reported with a status code of -1.
 
 At the root of this project is the bbc-url-tester.jar file. This is a prepackaged executable of the code. This can be executed using the following command.
 
-`java -jar build/libs/bbc-url-tester-1.0-SNAPSHOT.jar <insert space sperated args here>`
+`java -jar bbc-url-tester-1.0.jar <insert space sperated args here>`
 
-`java -jar build/libs/bbc-url-tester-1.0-SNAPSHOT.jar "https://www.bbc.co.uk\nhttps://www.google.co.uk"`
+`java -jar bbc-url-tester-1.0.jar "https://www.bbc.co.uk\nhttps://www.google.co.uk"`
 
 Quick description of all arguments and flags: 
 

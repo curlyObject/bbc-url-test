@@ -28,6 +28,7 @@ public class ThreadedUrlTester implements UrlTester {
      * @param timeout    The read and connect timeout values for the connection.
      * @return List of reports for every url string provided in urls
      */
+    //TODO Make a CompletableFuture complete exceptionally after a set length of time
     @Override
     public List<UrlReport> test(List<String> urls, UrlBuilder urlBuilder, int timeout) {
 
