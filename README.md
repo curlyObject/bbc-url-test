@@ -6,6 +6,29 @@
 - Java 8 or greater
 - JDK 1.8.0_131 or greater
 
+### About
+
+This is a java application to test a provided list of line end separated urls and to collect the Content Length, Date and status headers. This information is printed to standard output in a json format as follows:
+
+```
+{
+  "Url": "https://google.com",
+  "Status_code": 302,
+  "Content_length": 262,
+  "Date": "Tue, 25 Jul 2017 17:00:55 GMT"
+ }
+ ```
+ 
+ Errors are reported for a url as follows: 
+ ```
+ {
+  "Url": "bad://address",
+  "Error": "invalid url"
+ }
+ ```
+
+The Content length or Date field can have `null` as the value as they may not be returned by an endpoint.
+
 ##### For development
 - An internet connection to download dependencies through gradle
 
