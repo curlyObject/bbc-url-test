@@ -70,24 +70,6 @@ public class MainTest {
     }
 
     @Test
-    public void statusDocument_WhenUrlHttps() {
-
-        final String expectedDate = getDate();
-        final String expectedUrl = buildExpectedHttpsUrl(wireMockServer, MOCK_SERVER, TEST_PATH);
-
-        final HttpHeaders expectedHeaders = new HttpHeaders(buildContentLengthHeader(LENGTH),
-                buildDateHeader(expectedDate));
-
-        final int statusCode = 200;
-        stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
-
-        Main.executeUrlTester(new String[] {expectedUrl});
-
-        assertStatusDocument(expectedDate, expectedUrl, statusCode, LENGTH, extractStandardOutput());
-
-    }
-
-    @Test
     public void statusDocument_WhenUrlRedirects() {
 
         final String expectedDate = getDate();
