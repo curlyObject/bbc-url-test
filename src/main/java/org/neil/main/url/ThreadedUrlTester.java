@@ -3,6 +3,9 @@ package org.neil.main.url;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import static org.neil.main.util.ErrorOutput.logError;
@@ -11,6 +14,8 @@ import static org.neil.main.util.ErrorOutput.logError;
  * MultiThreaded tester for urls
  */
 public class ThreadedUrlTester implements UrlTester {
+
+    private static final int MAX_THREADS = 10000;
 
     /**
      * Converts the URL string into a URL object and then performs the GET request.
@@ -26,19 +31,35 @@ public class ThreadedUrlTester implements UrlTester {
     @Override
     public List<UrlReport> test(List<String> urls, UrlBuilder urlBuilder, int timeout) {
 
-        return urls
-                .parallelStream()
-                .map(urlString -> {
-                    final Optional<URL> maybeUrl = buildUrl(urlString, urlBuilder);
-                    if (!maybeUrl.isPresent()) {
-                        return new UrlErrorReport(urlString, "URL Malformed");
-                    }
-                    return maybeUrl.flatMap(url -> getHttpResponse(url, timeout))
-                            .map(httpResponse -> buildUrlTestReport(urlString, httpResponse))
-                            .orElse(new UrlErrorReport(urlString, "Url could not be connected to"));
-                })
+        ExecutorService executor = Executors.newFixedThreadPool(threadCount(urls.size()));
+        List<CompletableFuture<UrlReport>> futures =
+                urls.stream()
+                        .map(urlString -> CompletableFuture.supplyAsync(() -> {
+                            final Optional<URL> maybeUrl = buildUrl(urlString, urlBuilder);
+                            if (!maybeUrl.isPresent()) {
+                                return new UrlErrorReport(urlString, "URL Malformed");
+                            }
+                            return maybeUrl.flatMap(url -> getHttpResponse(url, timeout))
+                                    .map(httpResponse -> buildUrlTestReport(urlString, httpResponse))
+                                    .orElse(new UrlErrorReport(urlString, "Url could not be connected to"));
+                        }, executor))
+                        .collect(Collectors.toList());
+
+        return futures.stream()
+                .map(CompletableFuture::join)
                 .collect(Collectors.toList());
 
+    }
+
+    /**
+     * Limits the maximum number of threads that can be created. Prevents crashes due to memory.
+     *
+     * @param urlListSize The size of the url list
+     * @return The url list size if it is below 10000 or 10000.
+     */
+    private int threadCount(int urlListSize) {
+
+        return urlListSize < MAX_THREADS ? urlListSize : MAX_THREADS;
     }
 
     /**
