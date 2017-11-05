@@ -17,6 +17,11 @@ import static org.neil.main.util.LogOutput.logOutput;
 public class UrlTesterApplication {
 
     private static final Pattern LINE_END_REGEX = Pattern.compile("(\\\\n)|\n");
+    // 10 second timeout on requests
+    private static final int TIMEOUT = 10000;
+    private static final String HELP = "help";
+    private static final String TIMEOUT_ARGUMENT = "timeout";
+    private static final String DEFAULT = "default";
 
     /**
      * Tests urls to see if they can be reached and outputs a report for each url.
@@ -30,8 +35,18 @@ public class UrlTesterApplication {
         if (arguments.isEmpty()) {
             logError("Require an argument of urls, separated by new lines");
         } else {
-            outputReports(new ThreadedUrlTester().test(splitUrls(arguments.get("default")), new SimpleUrlVerifier()));
-            successful = true;
+            if (arguments.containsKey(HELP)) {
+                logOutput(
+                        "java -jar bbc-url-tester-1.0.jar <-h | --help> <-t | --timeout [integer value]> <urls>\n" +
+                                "-h | --help   prints help message \n" +
+                                "-t | --timeout   Set a timeout in milliseconds for connecting and reading urls provided\n" +
+                                "urls   A new line separated list of urls to test");
+                successful = true;
+            } else {
+                outputReports(new ThreadedUrlTester().test(splitUrls(arguments.get(DEFAULT)), new SimpleUrlVerifier(),
+                        getTimeout(arguments)));
+                successful = true;
+            }
         }
         return successful;
     }
@@ -46,6 +61,18 @@ public class UrlTesterApplication {
     List<String> splitUrls(String urlBlock) {
 
         return Arrays.asList(LINE_END_REGEX.split(urlBlock));
+    }
+
+    private int getTimeout(Map<String, String> arguments) {
+
+        if (arguments.containsKey(TIMEOUT_ARGUMENT)) {
+            try {
+                return Integer.valueOf(arguments.get(TIMEOUT_ARGUMENT));
+            } catch (NumberFormatException ex) {
+                logError("Timeout not a number, defaulting to 10 seconds");
+            }
+        }
+        return TIMEOUT;
     }
 
     /**

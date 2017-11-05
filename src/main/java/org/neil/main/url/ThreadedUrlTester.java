@@ -1,6 +1,5 @@
 package org.neil.main.url;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
@@ -21,10 +20,11 @@ public class ThreadedUrlTester implements UrlTester {
      *
      * @param urls       The list of url strings to perform GET requests on.
      * @param urlBuilder The UrlBuilder object instance to use for url string verification and conversion.
+     * @param timeout    The read and connect timeout values for the connection.
      * @return List of reports for every url string provided in urls
      */
     @Override
-    public List<UrlReport> test(List<String> urls, UrlBuilder urlBuilder) {
+    public List<UrlReport> test(List<String> urls, UrlBuilder urlBuilder, int timeout) {
 
         return urls
                 .parallelStream()
@@ -33,7 +33,7 @@ public class ThreadedUrlTester implements UrlTester {
                     if (!maybeUrl.isPresent()) {
                         return new UrlErrorReport(urlString, "URL Malformed");
                     }
-                    return maybeUrl.flatMap(this::getHttpResponse)
+                    return maybeUrl.flatMap(url -> getHttpResponse(url, timeout))
                             .map(httpResponse -> buildUrlTestReport(urlString, httpResponse))
                             .orElse(new UrlErrorReport(urlString, "Url could not be connected to"));
                 })
@@ -60,21 +60,20 @@ public class ThreadedUrlTester implements UrlTester {
 
     /**
      * Attempts to connect and retrieve response for the provided URL
-     * @param url The url to connect to
+     *
+     * @param url     The url to connect to
+     * @param timeout The read and connect timeout values for the connection.
      * @return An Optional of the Http responses if it could dbe connected ot or any empty optional if the connection failed.
      */
-    private Optional<HttpResponse> getHttpResponse(URL url) {
+    private Optional<HttpResponse> getHttpResponse(URL url, int timeout) {
 
-        try {
-            return new GetRequest().getUrl(url);
-        } catch (MalformedURLException e) {
-            return Optional.empty();
-        }
+        return new GetRequest().getUrl(url, timeout);
     }
 
     /**
      * Verifies and converts a string representation of a url to a URL object.
-     * @param url The string representing a url to verify and build
+     *
+     * @param url        The string representing a url to verify and build
      * @param urlBuilder The object to use to build and verify the url.
      * @return An optional of the URL object for the provided String if it is a valid url, otherwise returns an empty Optional
      */

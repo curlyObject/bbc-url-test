@@ -38,6 +38,8 @@ public class UrlTesterTest {
 
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
 
+    private static final int TIMEOUT = 10;
+
     @Before
     public void setUp() {
 
@@ -69,7 +71,7 @@ public class UrlTesterTest {
         PowerMockito.when(mockHttpConnection.getResponseCode()).thenReturn(200);
         PowerMockito.when(mockHttpConnection.getHeaderFields()).thenReturn(mockHeaders);
 
-        final List<UrlReport> urlReports = urlTester.test(singletonList(url), urlBuilder);
+        final List<UrlReport> urlReports = urlTester.test(singletonList(url), urlBuilder, TIMEOUT);
 
         assertSoftly(softly -> softly.assertThat(urlReports).containsExactly(expectedReport));
     }
@@ -92,7 +94,7 @@ public class UrlTesterTest {
         PowerMockito.when(mockHttpConnection.getResponseCode()).thenReturn(200);
         PowerMockito.when(mockHttpConnection.getHeaderFields()).thenReturn(mockHeaders);
 
-        final List<UrlReport> urlReports = urlTester.test(singletonList(url), urlBuilder);
+        final List<UrlReport> urlReports = urlTester.test(singletonList(url), urlBuilder, TIMEOUT);
 
         assertSoftly(softly -> softly.assertThat(urlReports).containsExactly(expectedReport));
     }
@@ -110,7 +112,7 @@ public class UrlTesterTest {
         when(urlBuilder.build(url)).thenReturn(mockUrl);
         PowerMockito.when(mockUrl.getProtocol()).thenReturn("http");
         PowerMockito.when(mockUrl.openConnection()).thenThrow(new IOException("I am Error"));
-        final List<UrlReport> urlReports = urlTester.test(singletonList(url), urlBuilder);
+        final List<UrlReport> urlReports = urlTester.test(singletonList(url), urlBuilder, TIMEOUT);
 
         assertSoftly(softly -> softly.assertThat(urlReports).containsExactly(expectedReport));
     }
@@ -123,7 +125,7 @@ public class UrlTesterTest {
         when(urlBuilder.verify(url)).thenReturn(true);
         when(urlBuilder.build(url)).thenThrow(new MalformedURLException());
 
-        final List<UrlReport> urlReports = urlTester.test(singletonList(url), urlBuilder);
+        final List<UrlReport> urlReports = urlTester.test(singletonList(url), urlBuilder, TIMEOUT);
 
         assertSoftly(softly -> softly.assertThat(urlReports).containsExactly(expectedReport));
     }
@@ -135,7 +137,7 @@ public class UrlTesterTest {
         final UrlErrorReport expectedReport = new UrlErrorReport(url, "URL Malformed");
         when(urlBuilder.verify(url)).thenReturn(false);
 
-        final List<UrlReport> urlReports = urlTester.test(singletonList(url), urlBuilder);
+        final List<UrlReport> urlReports = urlTester.test(singletonList(url), urlBuilder, TIMEOUT);
 
         assertSoftly(softly -> softly.assertThat(urlReports).containsExactly(expectedReport));
     }
@@ -175,7 +177,7 @@ public class UrlTesterTest {
         PowerMockito.when(mockHttpsConnection.getResponseCode()).thenReturn(200);
         PowerMockito.when(mockHttpsConnection.getHeaderFields()).thenReturn(mockHeaders);
 
-        final List<UrlReport> urlReports = urlTester.test(Arrays.asList(url1, url2, url3), urlBuilder);
+        final List<UrlReport> urlReports = urlTester.test(Arrays.asList(url1, url2, url3), urlBuilder, TIMEOUT);
 
         assertSoftly(softly -> softly.assertThat(urlReports)
                 .containsExactly(expectedReportUrl1, expectedReportUrl2, expectedReportUrl3));

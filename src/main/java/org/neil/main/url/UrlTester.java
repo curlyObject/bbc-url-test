@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface UrlTester {
 
-    List<UrlReport> test(List<String> urls, UrlBuilder urlBuilder);
+    List<UrlReport> test(List<String> urls, UrlBuilder urlBuilder, int timeout);
 
 }

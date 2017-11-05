@@ -29,6 +29,9 @@ public class MainTest {
     private static final String MOCK_SERVER = "localhost";
     private static final String TEST_PATH = "/test";
     private final String lineEnding = System.lineSeparator();
+    private final String TIMEOUT_FLAG = "--timeout";
+    // 200 millisecond timeout on tests to prevent long running. Simulates and long or infinite connection.
+    private final String TIMEOUT = "200";
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
@@ -66,7 +69,7 @@ public class MainTest {
         final int statusCode = 200;
         stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
 
-        Main.executeUrlTester(new String[] {expectedUrl});
+        Main.executeUrlTester(new String[] {TIMEOUT_FLAG, TIMEOUT, expectedUrl});
 
         assertStatusDocument(expectedDate, expectedUrl, statusCode, LENGTH, extractStandardOutput());
 
@@ -105,7 +108,8 @@ public class MainTest {
         final String expectedUrl7 = "fake.co";
 
         Main.executeUrlTester(
-                new String[] {String.join("\n", expectedUrl1, expectedUrl2, expectedUrl3, expectedUrl4, expectedUrl5,
+                new String[] {TIMEOUT_FLAG, TIMEOUT, String.join("\n", expectedUrl1, expectedUrl2, expectedUrl3,
+                        expectedUrl4, expectedUrl5,
                         expectedUrl6, expectedUrl7)});
 
         assertThat(extractStandardOutput())
@@ -177,7 +181,7 @@ public class MainTest {
         final int statusCode = 308;
         stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
 
-        Main.executeUrlTester(new String[] {expectedUrl});
+        Main.executeUrlTester(new String[] {TIMEOUT_FLAG, TIMEOUT, expectedUrl});
 
         assertStatusDocument(expectedDate, expectedUrl, statusCode, null, extractStandardOutput());
 
@@ -194,7 +198,7 @@ public class MainTest {
         final int statusCode = 301;
         stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
 
-        Main.executeUrlTester(new String[] {expectedUrl});
+        Main.executeUrlTester(new String[] {TIMEOUT_FLAG, TIMEOUT, expectedUrl});
 
         assertStatusDocument(expectedDate, expectedUrl, statusCode, null, extractStandardOutput());
 
@@ -211,7 +215,7 @@ public class MainTest {
         final int statusCode = 304;
         stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
 
-        Main.executeUrlTester(new String[] {expectedUrl});
+        Main.executeUrlTester(new String[] {TIMEOUT_FLAG, TIMEOUT, expectedUrl});
 
         assertStatusDocument(expectedDate, expectedUrl, statusCode, null, extractStandardOutput());
 
@@ -228,7 +232,7 @@ public class MainTest {
         final int statusCode = 404;
         stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
 
-        Main.executeUrlTester(new String[] {expectedUrl});
+        Main.executeUrlTester(new String[] {TIMEOUT_FLAG, TIMEOUT, expectedUrl});
 
         assertStatusDocument(expectedDate, expectedUrl, statusCode, null, extractStandardOutput());
     }
@@ -244,7 +248,7 @@ public class MainTest {
         final int statusCode = 200;
         stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
 
-        Main.executeUrlTester(new String[] {expectedUrl});
+        Main.executeUrlTester(new String[] {TIMEOUT_FLAG, TIMEOUT, expectedUrl});
 
         assertStatusDocument(expectedDate, expectedUrl, statusCode, null, extractStandardOutput());
     }
@@ -260,7 +264,7 @@ public class MainTest {
         final int statusCode = 200;
         stubUrl(wireMockServer, TEST_PATH, expectedHeaders, statusCode);
 
-        Main.executeUrlTester(new String[] {expectedUrl});
+        Main.executeUrlTester(new String[] {TIMEOUT_FLAG, TIMEOUT, expectedUrl});
 
         assertStatusDocument(expectedDate, expectedUrl, statusCode, LENGTH, extractStandardOutput());
     }
@@ -271,7 +275,7 @@ public class MainTest {
         final String expectedUrl = "ftp://dr@who/test";
         final String expectedError = "URL Malformed";
 
-        Main.executeUrlTester(new String[] {expectedUrl});
+        Main.executeUrlTester(new String[] {TIMEOUT_FLAG, TIMEOUT, expectedUrl});
 
         assertErrorDocument(expectedUrl, expectedError);
     }
@@ -282,7 +286,7 @@ public class MainTest {
         final String expectedUrl = "www.bbc.co.uk";
         final String expectedError = "URL Malformed";
 
-        Main.executeUrlTester(new String[] {expectedUrl});
+        Main.executeUrlTester(new String[] {TIMEOUT_FLAG, TIMEOUT, expectedUrl});
 
         assertErrorDocument(expectedUrl, expectedError);
     }
@@ -297,7 +301,7 @@ public class MainTest {
                 .willReturn(aResponse()
                         .withFixedDelay(11000)));
 
-        Main.executeUrlTester(new String[] {expectedUrl});
+        Main.executeUrlTester(new String[] {TIMEOUT_FLAG, TIMEOUT, expectedUrl});
 
         assertErrorDocument(expectedUrl, expectedError);
     }
@@ -312,7 +316,7 @@ public class MainTest {
                 .willReturn(aResponse()
                         .withFault(Fault.CONNECTION_RESET_BY_PEER)));
 
-        Main.executeUrlTester(new String[] {expectedUrl});
+        Main.executeUrlTester(new String[] {TIMEOUT_FLAG, TIMEOUT, expectedUrl});
 
         assertErrorDocument(expectedUrl, expectedError);
     }
@@ -327,7 +331,7 @@ public class MainTest {
                 .willReturn(aResponse()
                         .withFault(Fault.EMPTY_RESPONSE)));
 
-        Main.executeUrlTester(new String[] {expectedUrl});
+        Main.executeUrlTester(new String[] {TIMEOUT_FLAG, TIMEOUT, expectedUrl});
 
         assertErrorDocument(expectedUrl, expectedError);
     }
