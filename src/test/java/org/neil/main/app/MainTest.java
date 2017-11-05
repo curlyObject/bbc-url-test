@@ -70,6 +70,86 @@ public class MainTest {
     }
 
     @Test
+    public void statusDocument_WhenMultipleUrls() {
+
+        final String expectedDate = getDate();
+        final HttpHeaders expectedHeaders = new HttpHeaders(buildContentLengthHeader(LENGTH),
+                buildDateHeader(expectedDate));
+        final int statusCode = 200;
+
+        final String expectedUrl1 = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, "/1");
+        stubUrl(wireMockServer, "/1", expectedHeaders, statusCode);
+
+        final String expectedUrl2 = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, "/2");
+        wireMockServer.stubFor(get(urlEqualTo("/2"))
+                .willReturn(aResponse()
+                        .withFixedDelay(11000)));
+
+        final String expectedUrl3 = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, "/3");
+        stubUrl(wireMockServer, "/3", expectedHeaders, statusCode);
+
+        final String expectedUrl4 = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, "/4");
+        wireMockServer.stubFor(get(urlEqualTo("/4"))
+                .willReturn(aResponse()
+                        .withFault(Fault.EMPTY_RESPONSE)));
+
+        final String expectedUrl5 = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, "/5");
+        stubUrl(wireMockServer, "/5", expectedHeaders, statusCode);
+
+        final String expectedUrl6 = buildExpectedHttpUrl(wireMockServer, MOCK_SERVER, "/6");
+        stubUrl(wireMockServer, "/6", expectedHeaders, statusCode);
+
+        final String expectedUrl7 = "fake.co";
+
+        Main.executeUrlTester(
+                new String[] {String.join("\n", expectedUrl1, expectedUrl2, expectedUrl3, expectedUrl4, expectedUrl5,
+                        expectedUrl6, expectedUrl7)});
+
+        assertThat(extractStandardOutput())
+                .hasSize(7)
+                .containsExactly(
+                        "{\n" +
+                                "  \"Url\": \"" + expectedUrl1 + "\",\n" +
+                                "  \"Status_code\": " + statusCode + ",\n" +
+                                "  \"Content_length\": " + LENGTH + ",\n" +
+                                "  \"Date\": \"" + expectedDate + "\"\n" +
+                                "}\n",
+                        "{\n" +
+                                "  \"Url\": \"" + expectedUrl2 + "\",\n" +
+                                "  \"Error\": \"Url could not be connected to\"\n" +
+                                "}\n",
+                        "{\n" +
+                                "  \"Url\": \"" + expectedUrl3 + "\",\n" +
+                                "  \"Status_code\": " + statusCode + ",\n" +
+                                "  \"Content_length\": " + LENGTH + ",\n" +
+                                "  \"Date\": \"" + expectedDate + "\"\n" +
+                                "}\n",
+                        "{\n" +
+                                "  \"Url\": \"" + expectedUrl4 + "\",\n" +
+                                "  \"Error\": \"Url could not be connected to\"\n" +
+                                "}\n",
+                        "{\n" +
+                                "  \"Url\": \"" + expectedUrl5 + "\",\n" +
+                                "  \"Status_code\": " + statusCode + ",\n" +
+                                "  \"Content_length\": " + LENGTH + ",\n" +
+                                "  \"Date\": \"" + expectedDate + "\"\n" +
+                                "}\n",
+                        "{\n" +
+                                "  \"Url\": \"" + expectedUrl6 + "\",\n" +
+                                "  \"Status_code\": " + statusCode + ",\n" +
+                                "  \"Content_length\": " + LENGTH + ",\n" +
+                                "  \"Date\": \"" + expectedDate + "\"\n" +
+                                "}\n",
+                        "{\n" +
+                                "  \"Url\": \"" + expectedUrl7 + "\",\n" +
+                                "  \"Error\": \"URL Malformed\"\n" +
+                                "}\n"
+
+                );
+
+    }
+
+    @Test
     public void statusDocument_WhenUrlRedirects() {
 
         final String expectedDate = getDate();

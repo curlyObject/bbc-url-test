@@ -1,7 +1,7 @@
 package org.neil.main.app;
 
-import org.neil.main.url.SequentialUrlTester;
 import org.neil.main.url.SimpleUrlVerifier;
+import org.neil.main.url.ThreadedUrlTester;
 import org.neil.main.url.UrlReport;
 
 import java.util.Arrays;
@@ -19,7 +19,7 @@ public class UrlTesterApplication {
      * Tests urls to see if they can be reached and outputs a report for each url.
      *
      * @param arguments The arguments to define the behaviour of the application
-     * @return
+     * @return Trues if the application ran successfully, false if no arguments are provided
      */
     public boolean testUrls(Map<String, String> arguments) {
 
@@ -27,7 +27,7 @@ public class UrlTesterApplication {
         if (arguments.isEmpty()) {
             logError("Require an argument of urls, separated by new lines");
         } else {
-            outputReports(new SequentialUrlTester().test(splitUrls(arguments.get("default")), new SimpleUrlVerifier()));
+            outputReports(new ThreadedUrlTester().test(splitUrls(arguments.get("default")), new SimpleUrlVerifier()));
             successful = true;
         }
         return successful;

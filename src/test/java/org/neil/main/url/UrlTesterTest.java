@@ -31,7 +31,7 @@ public class UrlTesterTest {
     @Mock
     private UrlBuilder urlBuilder;
 
-    private UrlTester urlTester = new SequentialUrlTester();
+    private UrlTester urlTester = new ThreadedUrlTester();
 
     @Before
     public void setUp() {

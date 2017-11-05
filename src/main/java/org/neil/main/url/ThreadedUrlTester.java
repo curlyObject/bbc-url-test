@@ -8,11 +8,16 @@ import java.util.stream.Collectors;
 
 import static org.neil.main.util.ErrorOutput.logError;
 
-public class SequentialUrlTester implements UrlTester {
+/**
+ * MultiThreaded tester for urls
+ */
+public class ThreadedUrlTester implements UrlTester {
 
     /**
      * Converts the URL string into a URL object and then performs the GET request.
      * Will collect response information and collate into UrlReport objects.
+     * Uses the parallelStream method to multi thread the calls, minimising the effect a slow request or non
+     * respondant endpoint has.
      *
      * @param urls       The list of url strings to perform GET requests on.
      * @param urlBuilder The UrlBuilder object instance to use for url string verification and conversion.
@@ -22,7 +27,7 @@ public class SequentialUrlTester implements UrlTester {
     public List<UrlReport> test(List<String> urls, UrlBuilder urlBuilder) {
 
         return urls
-                .stream()
+                .parallelStream()
                 .map(urlString -> {
                     final Optional<URL> maybeUrl = buildUrl(urlString, urlBuilder);
                     if (!maybeUrl.isPresent()) {
