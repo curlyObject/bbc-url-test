@@ -31,6 +31,7 @@ public class MainTest {
     private final String lineEnding = System.lineSeparator();
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
 
     private WireMockServer wireMockServer;
 
@@ -38,6 +39,7 @@ public class MainTest {
     public void setUp() {
 
         System.setOut(new PrintStream(outContent));
+        System.setErr(new PrintStream(errContent));
 
         wireMockServer = startMockServer(MOCK_SERVER);
     }
@@ -106,7 +108,7 @@ public class MainTest {
                         expectedUrl6, expectedUrl7)});
 
         assertThat(extractStandardOutput())
-                .hasSize(7)
+                .hasSize(4)
                 .containsExactly(
                         "{\n" +
                                 "  \"Url\": \"" + expectedUrl1 + "\",\n" +
@@ -115,18 +117,10 @@ public class MainTest {
                                 "  \"Date\": \"" + expectedDate + "\"\n" +
                                 "}\n",
                         "{\n" +
-                                "  \"Url\": \"" + expectedUrl2 + "\",\n" +
-                                "  \"Error\": \"Url could not be connected to\"\n" +
-                                "}\n",
-                        "{\n" +
                                 "  \"Url\": \"" + expectedUrl3 + "\",\n" +
                                 "  \"Status_code\": " + statusCode + ",\n" +
                                 "  \"Content_length\": " + LENGTH + ",\n" +
                                 "  \"Date\": \"" + expectedDate + "\"\n" +
-                                "}\n",
-                        "{\n" +
-                                "  \"Url\": \"" + expectedUrl4 + "\",\n" +
-                                "  \"Error\": \"Url could not be connected to\"\n" +
                                 "}\n",
                         "{\n" +
                                 "  \"Url\": \"" + expectedUrl5 + "\",\n" +
@@ -139,6 +133,18 @@ public class MainTest {
                                 "  \"Status_code\": " + statusCode + ",\n" +
                                 "  \"Content_length\": " + LENGTH + ",\n" +
                                 "  \"Date\": \"" + expectedDate + "\"\n" +
+                                "}\n"
+                );
+
+        assertThat(extractStandardErr())
+                .contains(
+                        "{\n" +
+                                "  \"Url\": \"" + expectedUrl2 + "\",\n" +
+                                "  \"Error\": \"Url could not be connected to\"\n" +
+                                "}\n",
+                        "{\n" +
+                                "  \"Url\": \"" + expectedUrl4 + "\",\n" +
+                                "  \"Error\": \"Url could not be connected to\"\n" +
                                 "}\n",
                         "{\n" +
                                 "  \"Url\": \"" + expectedUrl7 + "\",\n" +
@@ -327,6 +333,12 @@ public class MainTest {
         return output.split(lineEnding);
     }
 
+    private String[] extractStandardErr() {
+
+        final String output = errContent.toString();
+        return output.split(lineEnding);
+    }
+
     private void assertStatusDocument(String expectedDateFormatted, String expectedUrl, int statusCode,
                                       Long expectedLength, String[] outputLines) {
 
@@ -344,9 +356,8 @@ public class MainTest {
 
     private void assertErrorDocument(String expectedUrl, String expectedError) {
 
-        assertThat(extractStandardOutput())
-                .hasSize(1)
-                .containsExactly(
+        assertThat(extractStandardErr())
+                .contains(
                         "{\n" +
                                 "  \"Url\": \"" + expectedUrl + "\",\n" +
                                 "  \"Error\": \"" + expectedError + "\"\n" +

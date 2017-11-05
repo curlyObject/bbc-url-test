@@ -1,14 +1,13 @@
 package org.neil.main.app;
 
-import org.neil.main.url.SimpleUrlVerifier;
-import org.neil.main.url.ThreadedUrlTester;
-import org.neil.main.url.UrlReport;
+import org.neil.main.url.*;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import static org.neil.main.util.ErrorOutput.logError;
+import static org.neil.main.util.LogOutput.logOutput;
 
 /**
  * Manages the orchestration of testing urls.
@@ -40,7 +39,13 @@ public class UrlTesterApplication {
 
     private void outputReports(List<UrlReport> urlReports) {
 
-        urlReports.forEach(urlReport -> System.out.println(urlReport.toJson()));
+        urlReports.forEach(urlReport -> {
+            if (urlReport instanceof UrlTestReport) {
+                logOutput(urlReport.toJson());
+            } else if (urlReport instanceof UrlErrorReport) {
+                logError(urlReport.toJson());
+            }
+        });
     }
 
 }

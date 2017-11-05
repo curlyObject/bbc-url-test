@@ -2,6 +2,7 @@ package org.neil.main.app;
 
 public class Main {
 
+    // TODO add argument for timeout
     public static void main(String... args) {
 
         if (executeUrlTester(args)) {
