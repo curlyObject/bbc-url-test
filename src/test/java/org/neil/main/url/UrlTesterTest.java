@@ -1,5 +1,6 @@
 package org.neil.main.url;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,7 +10,9 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import javax.net.ssl.HttpsURLConnection;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -33,10 +36,19 @@ public class UrlTesterTest {
 
     private UrlTester urlTester = new ThreadedUrlTester();
 
+    private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+
     @Before
     public void setUp() {
 
         reset(urlBuilder);
+        System.setErr(new PrintStream(errContent));
+    }
+
+    @After
+    public void tearDown() {
+
+        System.setErr(null);
     }
 
     @Test

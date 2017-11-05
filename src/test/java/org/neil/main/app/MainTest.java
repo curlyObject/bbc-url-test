@@ -51,6 +51,7 @@ public class MainTest {
             wireMockServer.stop();
         }
         System.setOut(null);
+        System.setErr(null);
     }
 
     @Test
