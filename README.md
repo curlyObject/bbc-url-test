@@ -7,7 +7,7 @@
 - JDK 1.8.0_131 or greater
 
 ##### For development
-- An internet connection to dowload dependencies through gradle
+- An internet connection to download dependencies through gradle
 
 ## Quick-start
 
@@ -28,7 +28,7 @@ Run the gradlew script file in the root of the project for your OS to download a
 
 `./gradlew run -PappArgs="[<insert comma seperated, quoted args here>]"`
 
-Example: `./gradlew run -PappArgs="['foo', 'bar']"`
+Example: `./gradlew run -PappArgs="['https://www.bbc.co.uk/nhttps://www.google.co.uk']"`
 
 This application is built using Gradle. Gradle manages the dependices of the project and downloads them from a publicly accessible repository.
 To build 
@@ -41,10 +41,13 @@ To build
 Will run all of the unit tests in this project.
 
 
-#### USeful Links
+#### Useful Links
 
 https://www.iana.org/assignments/message-headers/message-headers.xml#perm-headers
 
 List of all response headers that are officially recognised. The names defined here are what are used to try and extract the necessary information from responses from provided URLs.
+
+Git repository link:
+https://github.com/curlyObject/bbc-url-test
 
 
